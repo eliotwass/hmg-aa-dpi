@@ -33,6 +33,7 @@ Optionally (`TAP_LIMIT=off`) it also removes AA's tap/scroll limit while driving
 - [Troubleshooting](#troubleshooting)
 - [Not done: changing DPI at runtime](#not-done-changing-dpi-at-runtime)
 - [Credits](#credits)
+- [License](#license)
 
 ---
 
@@ -323,3 +324,7 @@ That would allow `setprop density 140` and reconnecting the phone, with no reins
 - [aa-proxy-rs](https://github.com/aa-proxy/aa-proxy-rs): the DPI override and `remove_tap_restriction` this mirrors
 - [NEMESIS](https://github.com/xwtk/hmg_nemesis) (xwtk): package system, root, and the reference GPM used for testing
 - [HMG Leafia Plus](https://github.com/VysseCodes/HMG-Leafia-Plus) and [egmp-aa-ev-feat](https://github.com/willemcvu/egmp-aa-ev-feat): the GPM install method (stored dex, dexopt, dalvik prefill, snapshot/restore)
+
+## License
+
+[GPL-3.0](LICENSE), the same as HMG Leafia Plus's `lpatch`.
