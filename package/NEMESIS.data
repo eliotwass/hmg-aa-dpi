@@ -1,0 +1,13 @@
+[nemesis]
+version=1.0
+id=aa.dpi
+name=Android Auto DPI
+types=application
+preinstall=scripts/pre.sh
+postinstall=scripts/post.sh
+preuninstall=scripts/preun.sh
+
+[app.0]
+kind=sh
+path=bin/status.sh
+uid=root

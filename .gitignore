@@ -1,0 +1,9 @@
+# build output
+tool/build/
+dist/
+__pycache__/
+
+# head unit files (dist/dryrun holds the unit's own GPM); never commit them
+*.apk
+*.odex
+*.dex

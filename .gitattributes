@@ -1,0 +1,4 @@
+# The head unit's /system/bin/sh can't run CRLF scripts; keep LF everywhere.
+* text=auto eol=lf
+*.jar binary
+*.zip binary

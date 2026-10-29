@@ -1,0 +1,7 @@
+# Edit, save, then install from this drive. Lower = smaller UI, more map.
+# Head unit default: 240 on the Ioniq 5's wide screen.
+DPI=160
+# empty = same as DPI (like aa-proxy-rs); keep = head unit's own values
+REAL_DPI=
+# off = no tap/scroll lockout while driving (like aa-proxy-rs); on = stock
+TAP_LIMIT=on
