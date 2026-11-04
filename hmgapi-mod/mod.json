@@ -1,0 +1,21 @@
+{
+  "id": "aa-dpi",
+  "name": "Android Auto DPI",
+  "version": "0.3.0",
+  "hmgapi": ">=1.0.0",
+  "authors": ["eliotwass", "AwsomeFox"],
+  "license": "GPL-3.0",
+  "description": "For wireless Android Auto, also needs HMG-API's Wireless CarPlay + Android Auto mod. Sets Android Auto's DPI (smaller text, more map) and its tap/scroll limit while driving, in HMG-API's settings.",
+  "live": true,
+  "hooks": {
+    "jar": "hooks.jar",
+    "entry": "dev.aadpi.hook.DpiHooks",
+    "points": {
+      "gpm.video_sink.nearest": "change",
+      "gpm.sensor_source.init": "change"
+    }
+  },
+  "logs": {
+    "match": ["[aa-dpi]"]
+  }
+}

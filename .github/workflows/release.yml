@@ -1,0 +1,108 @@
+# Builds the HMG-API mod for a release made in GitHub's UI and
+# attaches it: Releases -> Draft a new release -> tag v<version> (the "version" in
+# hmgapi-mod/mod.json) -> Publish. To build again for an existing release (after a
+# failed run, say): Actions -> Release -> Run workflow, with its tag.
+#
+# Needs the repository secret HMGAPI_AUTHOR_KEY: the HMG-API author key file's
+# contents. Every version must be signed with the same key, or HMG-API won't update
+# the installed mod.
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and attach to (v<version>)
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  # the HMG-API the mod is built and tested against (a release tag)
+  HMGAPI_REF: v1.0.1
+
+jobs:
+  hmgapi-mod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tag
+        id: tag
+        run: echo "tag=${{ github.event.release.tag_name || inputs.tag }}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+
+      - uses: actions/checkout@v4
+        with:
+          repository: VysseCodes/HMG-API
+          ref: ${{ env.HMGAPI_REF }}
+          path: HMG-API
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: The tag is the mod's version
+        id: version
+        run: |
+          v=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' hmgapi-mod/mod.json | head -1)
+          if [ "v$v" != "${{ steps.tag.outputs.tag }}" ]; then
+            echo "::error::release tag ${{ steps.tag.outputs.tag }} isn't v$v, the version in hmgapi-mod/mod.json"
+            exit 1
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+      - name: Android SDK (build-tools with d8, a platform android.jar)
+        run: |
+          ls "$ANDROID_HOME"/build-tools/*/d8 >/dev/null 2>&1 && ls "$ANDROID_HOME"/platforms/android-*/android.jar >/dev/null 2>&1 \
+            || yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "build-tools;35.0.0" "platforms;android-35" >/dev/null
+
+      - name: Key
+        env:
+          AUTHOR_KEY: ${{ secrets.HMGAPI_AUTHOR_KEY }}
+        run: |
+          [ -n "$AUTHOR_KEY" ] || { echo "::error::the HMGAPI_AUTHOR_KEY secret isn't set (Settings -> Secrets and variables -> Actions)"; exit 1; }
+          umask 077
+          mkdir -p "$RUNNER_TEMP/keys"
+          printf '%s\n' "$AUTHOR_KEY" > "$RUNNER_TEMP/keys/author.key"
+          # HMG-API's signer wants the public key beside it (<key>.pub): derived from the private one
+          base64 -d < "$RUNNER_TEMP/keys/author.key" | openssl pkey -inform DER -pubout -outform DER | base64 -w0 > "$RUNNER_TEMP/keys/author.key.pub"
+          echo >> "$RUNNER_TEMP/keys/author.key.pub"
+
+      - name: Build and test
+        env:
+          HMGAPI: ${{ github.workspace }}/HMG-API
+        run: |
+          sh hmgapi-mod/build.sh
+          sh hmgapi-mod/test/run.sh
+
+      - name: Signed package
+        env:
+          HMGAPI: ${{ github.workspace }}/HMG-API
+        run: |
+          sh hmgapi-mod/build.sh "$RUNNER_TEMP/keys/author.key"
+          ls -l "dist/aa-dpi-${{ steps.version.outputs.version }}.zip"
+
+      - name: NEMESIS packages
+        # HMG-API's tools/mknemesismod.sh: the signed mod as NEMESIS package hmgapi.aa-dpi
+        # (depends on hmgapi 1.0 or newer; its scripts install it with HMG-API's engine):
+        #   aa-dpi-<v>-nemesis.zip          for a USB stick, as NEMESIS's own downloads
+        #   aa-dpi-<v>-nemesis-package.zip  the package itself (NEMESIS Package Store)
+        run: sh HMG-API/tools/mknemesismod.sh "dist/aa-dpi-${{ steps.version.outputs.version }}.zip" "$PWD/dist"
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ steps.version.outputs.version }}
+        run: |
+          gh release upload "${{ steps.tag.outputs.tag }}" --clobber \
+            "dist/aa-dpi-$V.zip" "dist/aa-dpi-$V-nemesis.zip" "dist/aa-dpi-$V-nemesis-package.zip"
+
+      - name: Remove the key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/keys"
