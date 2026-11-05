@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "settings": [
+    {
+      "key": "dpi",
+      "type": "number",
+      "default": 200,
+      "title": "Android Auto DPI (60-480; the car's own is 240)",
+      "description": "Lower: smaller text, icons and buttons, more map. Applies at the next Android Auto connection (reconnect the phone)."
+    },
+    {
+      "key": "real_dpi",
+      "type": "choice",
+      "default": "same",
+      "title": "Real density",
+      "options": [
+        { "value": "same", "title": "Same as the DPI (like aa-proxy-rs)" },
+        { "value": "keep", "title": "Keep the head unit's" }
+      ]
+    },
+    {
+      "key": "tap_limit",
+      "type": "toggle",
+      "default": true,
+      "title": "Tap and scroll limit while driving (stock)",
+      "description": "Off: the car doesn't offer the phone its speed sensor, so Android Auto doesn't lock taps and scrolling after a while on the move (like aa-proxy-rs's remove_tap_restriction). Driving status still reaches the phone, so its other driving restrictions stay."
+    }
+  ]
+}

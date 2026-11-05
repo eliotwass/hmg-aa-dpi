@@ -1,13 +1,45 @@
 # hmg-aa-dpi
 
-A NEMESIS package (`aa.dpi`) that changes the DPI Android Auto renders at on Hyundai/Kia Gen5W head units (developed for a 2023 Ioniq 5 US, `NEEV.USA.0000.V015.012.260507`). A lower DPI makes AA's text, icons and buttons smaller and fits more map and content on the screen.
+Changes the DPI Android Auto renders at on Hyundai/Kia Gen5W head units, and optionally removes its tap/scroll limit while driving. A lower DPI makes AA's text, icons and buttons smaller and fits more map and content on the screen. It does what [aa-proxy-rs](https://github.com/aa-proxy/aa-proxy-rs)'s `dpi` and `remove_tap_restriction` settings do, but on the head unit itself, so it works over wired and wireless AA with no proxy hardware.
 
-It does what [aa-proxy-rs](https://github.com/aa-proxy/aa-proxy-rs)'s `dpi` setting does, but on the head unit itself. That means it works over wired and wireless AA and needs no proxy hardware. It's a separate package from [egmp-aa-ev-feat](https://github.com/willemcvu/egmp-aa-ev-feat) and works alongside it (see [Install order](#install-order-with-egmp-aa-ev-feat--leafia)).
+There are two ways to run it:
 
-Optionally (`TAP_LIMIT=off`) it also removes AA's tap/scroll limit while driving, the "you've scrolled a lot" lockout, the same way aa-proxy-rs's `remove_tap_restriction` does. See [Tap/scroll limit](#tapscroll-limit-tap_limitoff).
+- **HMG-API mod** ([`hmgapi-mod/`](hmgapi-mod/README.md)): a mod for [HMG-API](https://github.com/VysseCodes/HMG-API), the successor of HMG Leafia Plus. The DPI and the tap/scroll limit are set on HMG-API's settings page for the mod; a change applies at the next Android Auto connection, with nothing on the head unit changed. **Not tested on a car yet.**
+- **NEMESIS package** (`aa.dpi`, [below](#nemesis-package-legacy)): patches the Android Auto app's file at install time; the DPI is chosen on the install drive. Installed and running on a 2023 Ioniq 5 US.
 
 > [!WARNING]
-> This modifies a system app on your infotainment unit. The installer verifies everything before it touches `/system` and keeps a byte-for-byte backup, but you use it at your own risk. Not affiliated with Hyundai, Kia or Google.
+> Both change how a system app on your infotainment unit behaves; you use them at your own risk. Not affiliated with Hyundai, Kia or Google.
+
+## HMG-API mod
+
+### Install
+
+1. If the NEMESIS package `aa.dpi` is installed, uninstall it first (NEMESIS Manager → `aa.dpi` → uninstall, reboot): it patches the Android Auto app's file, which HMG-API expects stock.
+2. Install [HMG-API](https://github.com/VysseCodes/HMG-API/releases) 1.0.0 or newer, and for wireless Android Auto its **Wireless CarPlay + Android Auto** mod (wired Android Auto works without it). On a car whose hook map isn't checked on a car yet (the Ioniq 5's): in the HMG-API app's **Settings**, tap **Check the map on this car** (hooks run once it passes and the head unit restarts), or turn on **Try unchecked maps**. No adb needed.
+3. Download `aa-dpi-<version>.zip` from [Releases](../../releases), put it in a folder `HMGAPI/updates/` on a USB stick, plug it in, and tap **Check USB updates** in the HMG-API app.
+   **Or through NEMESIS:** unzip `aa-dpi-<version>-nemesis.zip` onto an empty USB stick and plug it in, then confirm in NEMESIS. It installs as NEMESIS package `hmgapi.aa-dpi` (needs HMG-API 1.0 or newer; for wireless Android Auto, also its Wireless CarPlay + Android Auto mod), and HMG-API's engine does the install, so it's the same mod either way. NEMESIS Manager can then update or uninstall it.
+
+### Use
+
+In the HMG-API app, open the mod (**Android Auto DPI**) and its settings. Set the DPI (240 is the car's own; 200 is a good first step), the real density, and the tap/scroll limit, then reconnect the phone (unplug and plug in, or turn its Wi-Fi off and on). To remove it: HMG-API app → the mod → remove.
+
+[What DPI does](#what-dpi-does) and [the tap/scroll limit](#tapscroll-limit-tap_limitoff) below apply to both. How the mod works: [hmgapi-mod/README.md](hmgapi-mod/README.md).
+
+### Building and releasing
+
+```sh
+HMGAPI=../HMG-API sh hmgapi-mod/build.sh                    # build/hmgapi/mod/aa-dpi/
+HMGAPI=../HMG-API sh hmgapi-mod/test/run.sh                 # off-car tests
+HMGAPI=../HMG-API sh hmgapi-mod/build.sh ~/hmg-keys/<key>   # + dist/aa-dpi-<version>.zip, signed
+```
+
+**Releases** are built by CI ([`.github/workflows/release.yml`](.github/workflows/release.yml)): set `"version"` in `hmgapi-mod/mod.json`, merge, then create a release in GitHub's UI with the tag `v<version>`. CI runs the tests, builds the mod, signs it with the HMG-API author key in the repository secrets, and attaches `aa-dpi-<version>.zip` to the release, with its NEMESIS packages. Details and the secrets: [hmgapi-mod/README.md](hmgapi-mod/README.md#releasing).
+
+## NEMESIS package (legacy)
+
+A NEMESIS package (`aa.dpi`) for Gen5W head units (developed for a 2023 Ioniq 5 US, `NEEV.USA.0000.V015.012.260507`). It's a separate package from [egmp-aa-ev-feat](https://github.com/willemcvu/egmp-aa-ev-feat) and works alongside it (see [Install order](#install-order-with-egmp-aa-ev-feat--leafia)). Optionally (`TAP_LIMIT=off`) it also removes AA's tap/scroll limit while driving. See [Tap/scroll limit](#tapscroll-limit-tap_limitoff).
+
+The installer verifies everything before it touches `/system` and keeps a byte-for-byte backup.
 
 **Status:** installed and running on a 2023 Ioniq 5 US (`NEEV.USA.0000.V015.012.260507`) with HMG Leafia Plus v1.0.5 and egmp-aa-ev-feat v0.2.1, at DPI 200 with `TAP_LIMIT=off`. Android Auto works at the new DPI. Whether the tap/scroll lockout is gone while driving is still being tested. On another unit, do the [dry run](#1-dry-run-over-adb-changes-nothing) first.
 
@@ -15,6 +47,8 @@ Optionally (`TAP_LIMIT=off`) it also removes AA's tap/scroll limit while driving
 
 ## Contents
 
+- [HMG-API mod](#hmg-api-mod): [Install](#install), [Use](#use), [Building and releasing](#building-and-releasing)
+- [NEMESIS package (legacy)](#nemesis-package-legacy)
 - [Quick start](#quick-start)
 - [What DPI does](#what-dpi-does)
 - [How aa-proxy-rs sets DPI](#how-aa-proxy-rs-sets-dpi)
@@ -152,6 +186,8 @@ egmp-aa-ev-feat doesn't use the speed sensor: its EV model, preconditioning and 
 
 ```
 README.md               this file
+hmgapi-mod/             the HMG-API mod (see its README)
+.github/workflows/      release.yml: builds the HMG-API mod for a GitHub release
 build.py                builds tool/build/aadpi.jar, dist/aa.dpi.zip, dist/hmg-aa-dpi-usb.zip
 dryrun.py               read-only check on a head unit over ADB
 tool/src/AaDpi.java     the patcher
@@ -315,16 +351,17 @@ Files on the unit:
 
 ## Not done: changing DPI at runtime
 
-Researched, not built. The 6-argument `nearestVideoConfiguration` wrapper is 45 code units. It has two near-identical branches that could be merged, freeing room to insert `SystemProperties.getInt("density", p3)` (and the same for p4). GPM's dex already references `SystemProperties.getInt(String,int)` (method id 257 in projection-tbt) and contains the string `"density"` (string id 6118). The rewrite would stay the same size, padded with `nop`s.
+In the NEMESIS package: researched, not built. The HMG-API mod ([`hmgapi-mod/`](hmgapi-mod/README.md)) does it with a hook instead, set on HMG-API's settings page. The 6-argument `nearestVideoConfiguration` wrapper is 45 code units. It has two near-identical branches that could be merged, freeing room to insert `SystemProperties.getInt("density", p3)` (and the same for p4). GPM's dex already references `SystemProperties.getInt(String,int)` (method id 257 in projection-tbt) and contains the string `"density"` (string id 6118). The rewrite would stay the same size, padded with `nop`s.
 
 That would allow `setprop density 140` and reconnecting the phone, with no reinstall. The catches: `density` isn't a `persist.*` property, so a boot service would need to re-apply it, and a dialog app would need NEMESIS root to `setprop`. Dropped for now in favour of the install-time value.
 
 ## Credits
 
 - [aa-proxy-rs](https://github.com/aa-proxy/aa-proxy-rs): the DPI override and `remove_tap_restriction` this mirrors
+- [HMG-API](https://github.com/VysseCodes/HMG-API) (VysseCodes): the mod platform, its hook points and settings
 - [NEMESIS](https://github.com/xwtk/hmg_nemesis) (xwtk): package system, root, and the reference GPM used for testing
 - [HMG Leafia Plus](https://github.com/VysseCodes/HMG-Leafia-Plus) and [egmp-aa-ev-feat](https://github.com/willemcvu/egmp-aa-ev-feat): the GPM install method (stored dex, dexopt, dalvik prefill, snapshot/restore)
 
 ## License
 
-[GPL-3.0](LICENSE), the same as HMG Leafia Plus's `lpatch`.
+[GPL-3.0](LICENSE), the same as HMG Leafia Plus's `lpatch`. The HMG-API mod is under the same license.
