@@ -2,7 +2,7 @@
 # The built mod (build/hmgapi/mod/aa-dpi, from hmgapi-mod/build.sh) through HMG-API's
 # own engine on a desktop JVM, on fake head units with HMG-API's real hook maps
 # (every car it has a map for), next to the Wireless CarPlay + Android Auto mod:
-# the mod.json is valid; it has no app, and HMG-API publishes it live with its three
+# the mod.json is valid; it has no app, and HMG-API publishes it live with its four
 # settings (its settings page); its two hook points (and the speed field) are mapped
 # on every car and its hooks load; and HMG-API's car check accepts any car.
 #   HMGAPI=<HMG-API checkout> sh hmgapi-mod/test/engine-test.sh
@@ -71,7 +71,7 @@ else:
     print("live=%s settings=%s" % (m.get("live"), ",".join(keys)))
 PY
 )
-    has "$P: HMG-API publishes it live, with its settings" "live=True settings=dpi,real_dpi,tap_limit" "$st"
+    has "$P: HMG-API publishes it live, with its settings" "live=True settings=dpi,real_dpi,tap_limit,video_window" "$st"
     out=$plan
     hasnt "$P: no problems with the mod" "aa-dpi" "$errs"
     hasnt "$P: hooks load" "aa-dpi won't load" "$out"

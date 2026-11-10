@@ -24,6 +24,13 @@
       "default": true,
       "title": "Tap and scroll limit while driving (stock)",
       "description": "Off: the car doesn't offer the phone its speed sensor, so Android Auto doesn't lock taps and scrolling after a while on the move (like aa-proxy-rs's remove_tap_restriction). Driving status still reaches the phone, so its other driving restrictions stay."
+    },
+    {
+      "key": "video_window",
+      "type": "number",
+      "default": 8,
+      "title": "Video frames in flight (1-16; the car's own is 4)",
+      "description": "How many video frames the phone may send before the car acknowledges them. The car's 4 held wireless Android Auto to about 42 fps; 8 gives close to 60 (smoother). Lower if taps feel slow. Applies at the next Android Auto connection."
     }
   ]
 }
