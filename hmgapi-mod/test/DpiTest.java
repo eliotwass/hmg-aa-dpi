@@ -25,6 +25,7 @@ public final class DpiTest {
         check("the car's list isn't changed", sensors[1] == 10 && sensors.length == 5);
         check("every one of a repeated type", Dpi.without(new int[] {10, 3, 10}, 10).length == 1);
         check("video window: 8 is set", Dpi.window(8) == 8);
+        check("video window: the default (6) is set", Dpi.WINDOW_DEFAULT == 6 && Dpi.window(Dpi.WINDOW_DEFAULT) == 6);
         check("video window: 1 and 16 are the limits", Dpi.window(1) == 1 && Dpi.window(16) == 16);
         check("video window: the car's 4 is left alone", Dpi.window(4) == 0);
         check("video window: 0 or 17 leaves the car's", Dpi.window(0) == 0 && Dpi.window(17) == 0);

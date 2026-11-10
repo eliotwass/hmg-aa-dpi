@@ -15,7 +15,7 @@ instead of the NEMESIS package's patched GPM APK.
 
 1. Open the HMG-API app, then the mod (**Android Auto DPI**) and its settings.
 2. Set the DPI (240 is the car's own; 200 is a good first step), choose the real
-   density, turn the tap/scroll limit on or off, and set the video window (8 is the
+   density, turn the tap/scroll limit on or off, and set the video window (6 is the
    default; the car's own is 4).
 3. Reconnect the phone: unplug and plug in, or turn its Wi-Fi off and on. The phone
    asks for the DPI, the car's sensors and the video window only when it connects, so a change shows at
@@ -26,7 +26,7 @@ instead of the NEMESIS package's patched GPM APK.
 | `dpi` (60-480, default 200) | the DPI every video setting offers the phone (`gpm.video_sink.nearest`) |
 | `real_dpi` (`same` / `keep`) | real density the same as the DPI (aa-proxy-rs's way, the default), or the car's own |
 | `tap_limit` (on = stock) | off: the speed sensor isn't offered to the phone (`gpm.sensor_source.init`), so Android Auto doesn't lock taps and scrolling on the move; driving status still goes to the phone |
-| `video_window` (1-16, default 8; 4 = stock) | how many video frames the phone may send before the car acknowledges them (see below) |
+| `video_window` (1-16, default 6; 4 = stock) | how many video frames the phone may send before the car acknowledges them (see below) |
 
 ### The video window: a smoother picture
 
@@ -39,14 +39,16 @@ Android Auto, measured with `dumpsys SurfaceFlinger --latency SurfaceView`:
 | Window | Frame rate | Longest gap between frames | Video from the phone |
 |---|---|---|---|
 | 4 (the car's) | 41-43 fps | 50-67 ms | 4.3 Mbit/s |
+| 6 (the default) | 60.0 fps | 17 ms (one screen refresh) | |
 | 8 | 56-59 fps | 33 ms | 15.5 Mbit/s |
 
 The mod sets the window again from the same video hook, once per connection: `VideoSink.init`
 runs before the connection's video settings, and the window goes to the phone only when it
 opens the video channel. `nativeSetMaxUnackedFrames` is a JNI method of Android Auto's receiver
 library, which is the same build on every Gen5W car, so its name doesn't change. More frames in
-flight can add a little latency to taps (up to about 4 frames, 70 ms, at 60 fps): lower the
-setting if Android Auto feels slow to respond, or set 4 for the car's own.
+flight can add a little latency to taps (2 more frames at 6, about 35 ms at 60 fps; 4 more at
+8): lower the setting if Android Auto feels slow to respond, or set 4 for the car's own. 6 is the
+default: it reached a steady 60 fps on the car with fewer frames waiting than 8.
 
 ## How it's built
 

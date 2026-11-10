@@ -21,7 +21,7 @@ There are two ways to run it:
 
 ### Use
 
-In the HMG-API app, open the mod (**Android Auto DPI**) and its settings. Set the DPI (240 is the car's own; 200 is a good first step), the real density, the tap/scroll limit and the video window (8 by default; 4 is the car's own), then reconnect the phone (unplug and plug in, or turn its Wi-Fi off and on). To remove it: HMG-API app → the mod → remove.
+In the HMG-API app, open the mod (**Android Auto DPI**) and its settings. Set the DPI (240 is the car's own; 200 is a good first step), the real density, the tap/scroll limit and the video window (6 by default; 4 is the car's own), then reconnect the phone (unplug and plug in, or turn its Wi-Fi off and on). To remove it: HMG-API app → the mod → remove.
 
 [What DPI does](#what-dpi-does) and [the tap/scroll limit](#tapscroll-limit-tap_limitoff) below apply to both. How the mod works: [hmgapi-mod/README.md](hmgapi-mod/README.md).
 

@@ -25,9 +25,9 @@ import hmgapi.hook.Points;
  * - The same video hook also sets Android Auto's video window: how many frames the phone
  *   may send before the car acknowledges them. GPM's VideoSink.init sets 4
  *   (nativeSetMaxUnackedFrames), which over Wi-Fi held a 60 fps stream to about 42 fps on a
- *   US Ioniq 5; 8 gave 56-59 fps. VideoSink.init runs before the connection's video settings
- *   and the window goes to the phone when it opens the video channel, later, so setting it
- *   again here takes effect. It's a JNI method of the receiver library (the same build on
+ *   US Ioniq 5; 6 gave a steady 60 fps (8: 56-59). VideoSink.init runs before the
+ *   connection's video settings and the window goes to the phone when it opens the video
+ *   channel, later, so setting it again here takes effect. It's a JNI method of the receiver library (the same build on
  *   every Gen5W car), so its name is fixed.
  *
  * Both read the settings when they run, and HMG-API hands every running app a
@@ -79,13 +79,13 @@ public final class DpiHooks extends ModEntry {
     }
 
     static String windowText(ModContext mod) {
-        int w = Dpi.window(mod.settingInt("video_window", 8));
+        int w = Dpi.window(mod.settingInt("video_window", Dpi.WINDOW_DEFAULT));
         return w == 0 ? Dpi.WINDOW_CAR + " (stock)" : String.valueOf(w);
     }
 
     /** VideoSink.nativeSetMaxUnackedFrames(n), unless the setting leaves the car's 4 */
     static void setWindow(ModContext mod, Object videoSink) {
-        int w = Dpi.window(mod.settingInt("video_window", 8));
+        int w = Dpi.window(mod.settingInt("video_window", Dpi.WINDOW_DEFAULT));
         if (w == 0) return;
         try {
             Method m = videoSink.getClass().getDeclaredMethod("nativeSetMaxUnackedFrames", int.class);
