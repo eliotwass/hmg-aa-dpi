@@ -23,6 +23,17 @@ final class Dpi {
         return "keep".equals(mode) ? carReal : dpi;
     }
 
+    /** the car's own video window (frames the phone may send before the car acknowledges them), and the setting's limit */
+    static final int WINDOW_CAR = 4, WINDOW_MAX = 16;
+
+    /** the setting's default: a steady 60 fps over Wi-Fi on a US Ioniq 5, with fewer frames waiting than 8 */
+    static final int WINDOW_DEFAULT = 6;
+
+    /** the video window to set, or 0: leave the car's */
+    static int window(int setting) {
+        return setting >= 1 && setting <= WINDOW_MAX && setting != WINDOW_CAR ? setting : 0;
+    }
+
     /** the offered sensor list without one type (the same array if it isn't there) */
     static int[] without(int[] in, int type) {
         int n = 0;

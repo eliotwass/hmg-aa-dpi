@@ -4,7 +4,7 @@ Changes the DPI Android Auto renders at on Hyundai/Kia Gen5W head units, and opt
 
 There are two ways to run it:
 
-- **HMG-API mod** ([`hmgapi-mod/`](hmgapi-mod/README.md)): a mod for [HMG-API](https://github.com/VysseCodes/HMG-API), the successor of HMG Leafia Plus. The DPI and the tap/scroll limit are set on HMG-API's settings page for the mod; a change applies at the next Android Auto connection, with nothing on the head unit changed. **Not tested on a car yet.**
+- **HMG-API mod** ([`hmgapi-mod/`](hmgapi-mod/README.md)): a mod for [HMG-API](https://github.com/VysseCodes/HMG-API), the successor of HMG Leafia Plus. The DPI, the tap/scroll limit and the video window (a smoother picture: about 42 fps becomes near 60 over wireless Android Auto) are set on HMG-API's settings page for the mod; a change applies at the next Android Auto connection, with nothing on the head unit changed. The video window is measured on a US Ioniq 5; the DPI and tap limit are checked off the car only.
 - **NEMESIS package** (`aa.dpi`, [below](#nemesis-package-legacy)): patches the Android Auto app's file at install time; the DPI is chosen on the install drive. Installed and running on a 2023 Ioniq 5 US.
 
 > [!WARNING]
@@ -21,7 +21,7 @@ There are two ways to run it:
 
 ### Use
 
-In the HMG-API app, open the mod (**Android Auto DPI**) and its settings. Set the DPI (240 is the car's own; 200 is a good first step), the real density, and the tap/scroll limit, then reconnect the phone (unplug and plug in, or turn its Wi-Fi off and on). To remove it: HMG-API app → the mod → remove.
+In the HMG-API app, open the mod (**Android Auto DPI**) and its settings. Set the DPI (240 is the car's own; 200 is a good first step), the real density, the tap/scroll limit and the video window (6 by default; 4 is the car's own), then reconnect the phone (unplug and plug in, or turn its Wi-Fi off and on). To remove it: HMG-API app → the mod → remove.
 
 [What DPI does](#what-dpi-does) and [the tap/scroll limit](#tapscroll-limit-tap_limitoff) below apply to both. How the mod works: [hmgapi-mod/README.md](hmgapi-mod/README.md).
 

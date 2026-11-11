@@ -5,7 +5,7 @@
   "hmgapi": ">=1.0.0",
   "authors": ["eliotwass", "AwsomeFox"],
   "license": "GPL-3.0",
-  "description": "For wireless Android Auto, also needs HMG-API's Wireless CarPlay + Android Auto mod. Sets Android Auto's DPI (smaller text, more map) and its tap/scroll limit while driving, in HMG-API's settings.",
+  "description": "For wireless Android Auto, also needs HMG-API's Wireless CarPlay + Android Auto mod. Android Auto's DPI (smaller text, more map), its tap/scroll limit while driving and its frame rate (near 60 fps).",
   "live": true,
   "hooks": {
     "jar": "hooks.jar",
